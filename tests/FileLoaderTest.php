@@ -12,6 +12,12 @@ class FileLoaderTest extends TestCase
 		$this->assertEquals( $loader->getSource( 'logo.png' ), 'logo.png' );
 	}
 
+	public function testGetExtension()
+	{
+		$loader = new FileLoader([ 'directory-server' => getcwd() ]);
+		$this->assertEquals( $loader->getExtension( 'README.md' ), 'md' );
+	}
+
 	public function testSrc()
 	{
 		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/' ]);

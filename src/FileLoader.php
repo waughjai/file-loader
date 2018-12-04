@@ -45,6 +45,15 @@ namespace WaughJ\FileLoader
 				return $this->getSource( $local ) . $this->getVersionString( $local );
 			}
 
+			public function getExtension( string $local ) : string
+			{
+				return ( $this->extension !== '' )
+					? $this->extension
+					: ( ( $this->directory_server !== null )
+						? pathinfo( $this->getServerLocation( $local )->getString() )[ 'extension' ]
+						: '' );
+			}
+
 			public function changeURLDirectory( $new_directory ) : FileLoader
 			{
 				return new FileLoader
@@ -100,10 +109,15 @@ namespace WaughJ\FileLoader
 			{
 				if ( $this->directory_server !== null )
 				{
-					$server_location = $this->directory_server->addDirectory( $this->getLocalInShared( $local ) );
+					$server_location = $this->getServerLocation( $local );
 					return '?m=' . filemtime( $server_location->getString([ 'ending-slash' => false ]) );
 				}
 				return '';
+			}
+
+			private function getServerLocation( string $local ) : Directory
+			{
+				return $this->directory_server->addDirectory( $this->getLocalInShared( $local ) );
 			}
 
 			private function getLocalInShared( string $local ) : Directory
