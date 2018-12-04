@@ -34,6 +34,7 @@ class FileLoaderTest extends TestCase
 	{
 		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => getcwd() ]);
 		$this->assertEquals( $loader->getSourceWithVersion( 'README.md' ), 'https://www.jaimeson-waugh.com/README.md?m=' . filemtime( getcwd() . '/' . 'README.md' ) );
+		$this->assertEquals( $loader->getVersion( 'README.md' ), filemtime( getcwd() . '/' . 'README.md' ) );
 		$loader2 = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => '' ]);
 		$this->assertEquals( $loader2->getSourceWithVersion( 'README.md' ), 'https://www.jaimeson-waugh.com/README.md' );
 		$loader3 = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => false ]);

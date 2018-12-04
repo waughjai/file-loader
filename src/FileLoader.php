@@ -98,6 +98,16 @@ namespace WaughJ\FileLoader
 				]);
 			}
 
+			public function getVersion( string $local ) : int
+			{
+				if ( $this->directory_server !== null )
+				{
+					$server_location = $this->getServerLocation( $local );
+					return filemtime( $server_location->getString([ 'ending-slash' => false ]) );
+				}
+				return 0;
+			}
+
 
 
 		//
@@ -110,7 +120,7 @@ namespace WaughJ\FileLoader
 				if ( $this->directory_server !== null )
 				{
 					$server_location = $this->getServerLocation( $local );
-					return '?m=' . filemtime( $server_location->getString([ 'ending-slash' => false ]) );
+					return '?m=' . ( string )( $this->getVersion( $local ) );
 				}
 				return '';
 			}
