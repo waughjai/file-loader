@@ -30,6 +30,12 @@ class FileLoaderTest extends TestCase
 		$this->assertEquals( $loader4->getSource( 'logo.png' ), 'logo.png' );
 	}
 
+	public function testNonexistentFile()
+	{
+		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => getcwd() ]);
+		$this->assertEquals( 'https://www.jaimeson-waugh.com/bleb', $loader->getSourceWithVersion( 'bleb' ) );
+	}
+
 	public function testSrcWithVersion()
 	{
 		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => getcwd() ]);

@@ -42,7 +42,18 @@ namespace WaughJ\FileLoader
 
 			public function getSourceWithVersion( string $local ) : string
 			{
-				return $this->getSource( $local ) . $this->getVersionString( $local );
+				$version_string = '';
+				$source = $this->getSource( $local );
+				try
+				{
+					$version_string = $this->getVersionString( $local );
+				}
+				catch ( \Exception $e )
+				{
+					echo( "Error: could not find modified time for file \"{$source}\"" );
+				}
+
+				return $source . $version_string;
 			}
 
 			public function getExtension( string $local ) : string
