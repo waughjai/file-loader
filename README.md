@@ -48,7 +48,7 @@ If you want to change the same loader, just set the loader equal to change, repl
 
 ## Error Handling
 
-The "getSourceWithVersion" method analyzes the file on the server's modified date to create the version string. If it can't access the file, it throws a WaughJ\FileLoader\MissingFileException exception, which includes the server & url paths in it. If you want a safe way to fallback to versionless source without breaking the website or program, run a simple try & catch & in the catch use the exception object's "getFileURL" method to get the versionless source:
+The "getSourceWithVersion" method analyzes the file on the server's modified date to create the version string. If it can't access the file, it throws a WaughJ\FileLoader\MissingFileException exception, which includes the server & url paths in it. If you want a safe way to fallback to versionless source without breaking the website or program, run a simple try & catch & in the catch use the exception object's "getFallbackContent" method to get the versionless source:
 
 	$file_url = null;
 	try
@@ -60,5 +60,5 @@ The "getSourceWithVersion" method analyzes the file on the server's modified dat
 		// Perhaps run some logging code that logs that $e->getFilename() couldn't be found.
 
 		// If exception is thrown, $file_url will be the equivalent o' $loader->getSource( 'main' ).
-		$file_url = $e->getFileURL();
+		$file_url = $e->getFallbackContent();
 	}

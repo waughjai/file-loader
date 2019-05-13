@@ -5,10 +5,10 @@ namespace WaughJ\FileLoader
 {
 	class MissingFileException extends \RuntimeException
 	{
-		public function __construct( string $filename, string $file_url )
+		public function __construct( string $filename, string $fallback )
 		{
 			$this->filename = $filename;
-			$this->file_url = $file_url;
+			$this->fallback = $fallback;
 			parent::__construct( "Error: could not find modified time for file \"{$filename}\"" );
 		}
 
@@ -17,9 +17,9 @@ namespace WaughJ\FileLoader
 			return $this->filename;
 		}
 
-		public function getFileURL() : string
+		public function getFallbackContent() : string
 		{
-			return $this->file_url;
+			return $this->fallback;
 		}
 
 		private $filename;

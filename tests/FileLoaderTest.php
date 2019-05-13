@@ -42,7 +42,7 @@ class FileLoaderTest extends TestCase
 		}
 		catch ( MissingFileException $e )
 		{
-			$file = $e->getFileURL();
+			$file = $e->getFallbackContent();
 		}
 		$this->assertEquals( 'https://www.jaimeson-waugh.com/bleb', $file );
 	}
