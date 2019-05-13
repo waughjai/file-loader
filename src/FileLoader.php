@@ -24,7 +24,7 @@ namespace WaughJ\FileLoader
 				else
 				{
 					$arguments[ 'directory-url' ] = ( string )( $arguments[ 'directory-url' ] );
-					$this->directory_url = Url::fromString( $arguments[ 'directory-url' ] );
+					$this->directory_url = new Directory( ( string )( Url::fromString( $arguments[ 'directory-url' ] ) ) );
 				}
 
 				$this->directory_server = ( !isset( $arguments[ 'directory-server' ] ) || !$arguments[ 'directory-server' ] ) ? null : new Directory( $arguments[ 'directory-server' ] );
@@ -34,35 +34,13 @@ namespace WaughJ\FileLoader
 
 			public function getSource( string $local ) : string
 			{
-				$local = new Directory( $this->getLocalInShared( $local ) );
-				$directory = ( string )( $this->directory_url );
-				return $directory . $local->getString([ 'ending-slash' => false, 'starting-slash' => ( $directory !== '' ) ]);
-				// Have starting slash if there is a directory beforehand, to act as divider; don't have it if we have local 'lone.
+				$full = new Directory( [ $this->directory_url, $this->getLocalInShared( $local ) ] );
+				return $full->getString([ 'ending-slash' => false, 'starting-slash' => false ]);
 			}
 
 			public function getSourceWithVersion( string $local ) : string
 			{
-				$version_string = '';
-				$source = $this->getSource( $local );
-				try
-				{
-					$version_string = $this->getVersionString( $local );
-				}
-				catch ( \Exception $e )
-				{
-					echo( "Error: could not find modified time for file \"{$source}\"" );
-				}
-
-				return $source . $version_string;
-			}
-
-			public function getExtension( string $local ) : string
-			{
-				return ( $this->extension !== '' )
-					? $this->extension
-					: ( ( $this->directory_server !== null )
-						? pathinfo( $this->getServerLocation( $local )->getString() )[ 'extension' ]
-						: '' );
+				return $this->getSource( $local ) . $this->getVersionString( $local );
 			}
 
 			public function changeURLDirectory( $new_directory ) : FileLoader
@@ -113,11 +91,43 @@ namespace WaughJ\FileLoader
 			{
 				if ( $this->directory_server !== null )
 				{
-					$server_location = $this->getServerLocation( $local );
-					$filetime = filemtime( $server_location->getString([ 'ending-slash' => false ]) );
-					return ( $filetime !== false ) ? $filetime : 0;
+					try
+					{
+						$server_location = $this->getServerLocation( $local );
+						$full = $server_location->getString([ 'ending-slash' => false ]);
+						$filetime = filemtime( $full );
+						return ( $filetime !== false ) ? $filetime : 0;
+					}
+					catch ( \Exception $e )
+					{
+						throw new MissingFileException( "Error: could not find modified time for file \"{$full}\"" );
+					}
 				}
 				return 0;
+			}
+
+			public function getDirectoryURL() : Directory
+			{
+				return $this->directory_url;
+			}
+
+			public function getServerDirectory() : Directory
+			{
+				return $this->directory_server;
+			}
+
+			public function getSharedDirectory() : Directory
+			{
+				return $this->shared_directory;
+			}
+
+			public function getExtension( string $local = null ) : string
+			{
+				return ( $this->extension !== '' )
+					? $this->extension
+					: ( ( $this->directory_server !== null && $local !== null )
+						? pathinfo( $this->getServerLocation( $local )->getString() )[ 'extension' ]
+						: '' );
 			}
 
 

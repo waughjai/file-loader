@@ -1,8 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use WaughJ\FileLoader\FileLoader;
 use WaughJ\Directory\Directory;
+use WaughJ\FileLoader\FileLoader;
+use WaughJ\FileLoader\MissingFileException;
 
 class FileLoaderTest extends TestCase
 {
@@ -33,6 +34,7 @@ class FileLoaderTest extends TestCase
 	public function testNonexistentFile()
 	{
 		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => getcwd() ]);
+		$this->expectException( MissingFileException::class );
 		$this->assertEquals( 'https://www.jaimeson-waugh.com/bleb', $loader->getSourceWithVersion( 'bleb' ) );
 	}
 
@@ -109,5 +111,13 @@ class FileLoaderTest extends TestCase
 		$this->assertEquals( $loader->getSourceWithVersion( 'README' ), 'https://example.jp.com/README.md?m=' . filemtime( getcwd() . '/' . 'README.md' ) );
 		$loader2 = $loader->changeURLDirectory( 'https://www.somethingelse.com' )->changeExtension( 'php' )->changeSharedDirectory( 'src' );
 		$this->assertEquals( $loader2->getSourceWithVersion( 'FileLoader' ), 'https://www.somethingelse.com/src/FileLoader.php?m=' . filemtime( getcwd() . '/src/' . 'FileLoader.php' ) );
+	}
+
+	public function testGetters()
+	{
+		$loader = new FileLoader([ 'directory-url' => 'https://example.jp.com/', 'directory-server' => getcwd(), 'shared-directory' => 'src' ]);
+		$this->assertEquals( new Directory( 'src' ), $loader->getSharedDirectory() );
+		$this->assertEquals( new Directory( getcwd() ), $loader->getServerDirectory() );
+		$this->assertEquals( new Directory( 'https://example.jp.com/' ), $loader->getDirectoryURL() );
 	}
 }
