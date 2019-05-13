@@ -45,3 +45,19 @@ To change multiple attributes easily, just chain them:
 If you want to change the same loader, just set the loader equal to change, replacing the ol' instance with the new:
 
 	$loader1 = $loader1->changeURLDirectory( 'https:/www.new-website.com' )->changeExtension( 'sass' );
+
+## Error Handling
+
+The "getSourceWithVersion" method analyzes the file on the server's modified date to create the version string. If it can't access the file, it throws a WaughJ\FileLoader\MissingFileException exception, which includes the server & url paths in it. If you want a safe way to fallback to versionless source,
+run a simple try & catch & in the catch use the exception object's "getFileURL" method to get the versionless source:
+
+	$file_url = null;
+	try
+	{
+		$file_url = $loader->getSourceWithVersion( 'main' );
+	}
+	catch ( MissingFileException $e )
+	{
+		// If exception is thrown, $file_url will be the equivalent o' $loader->getSource( 'main' ).
+		$file_url = $e->getFileURL();
+	}
