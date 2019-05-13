@@ -92,12 +92,8 @@ namespace WaughJ\FileLoader
 				if ( $this->directory_server !== null )
 				{
 					$full = $this->getServerLocation( $local )->getString([ 'ending-slash' => false ]);
-					try
-					{
-						$filetime = filemtime( $full );
-						return ( $filetime !== false ) ? $filetime : 0;
-					}
-					catch ( \Exception $e )
+					$filetime = @filemtime( $full ); // O'erride PHP's idiotic way o' handling errors with a sane method.
+					if ( $filetime === false )
 					{
 						// If filemtime can't find file, throw exception, but pass versionless
 						// server & url filepaths. This allows those who want to deal with
@@ -105,6 +101,7 @@ namespace WaughJ\FileLoader
 						// to still be able to safely access default paths.
 						throw new MissingFileException( $full, $this->getSource( $local ) );
 					}
+					return $filetime;
 				}
 				return 0;
 			}
