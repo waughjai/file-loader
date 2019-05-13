@@ -34,8 +34,17 @@ class FileLoaderTest extends TestCase
 	public function testNonexistentFile()
 	{
 		$loader = new FileLoader([ 'directory-url' => 'https://www.jaimeson-waugh.com/', 'directory-server' => getcwd() ]);
-		$this->expectException( MissingFileException::class );
-		$this->assertEquals( 'https://www.jaimeson-waugh.com/bleb', $loader->getSourceWithVersion( 'bleb' ) );
+		$file = null;
+		try
+		{
+			// 'Cause o' exception, this won't run.
+			$file = $loader->getSourceWithVersion( 'bleb' );
+		}
+		catch ( MissingFileException $e )
+		{
+			$file = $e->getFileURL();
+		}
+		$this->assertEquals( 'https://www.jaimeson-waugh.com/bleb', $file );
 	}
 
 	public function testSrcWithVersion()

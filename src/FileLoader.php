@@ -91,16 +91,19 @@ namespace WaughJ\FileLoader
 			{
 				if ( $this->directory_server !== null )
 				{
+					$full = $this->getServerLocation( $local )->getString([ 'ending-slash' => false ]);
 					try
 					{
-						$server_location = $this->getServerLocation( $local );
-						$full = $server_location->getString([ 'ending-slash' => false ]);
 						$filetime = filemtime( $full );
 						return ( $filetime !== false ) ? $filetime : 0;
 					}
 					catch ( \Exception $e )
 					{
-						throw new MissingFileException( "Error: could not find modified time for file \"{$full}\"" );
+						// If filemtime can't find file, throw exception, but pass versionless
+						// server & url filepaths. This allows those who want to deal with
+						// to catch any errors, but also allows those who don't care
+						// to still be able to safely access default paths.
+						throw new MissingFileException( $full, $this->getSource( $local ) );
 					}
 				}
 				return 0;
@@ -139,13 +142,7 @@ namespace WaughJ\FileLoader
 
 			private function getVersionString( string $local ) : string
 			{
-				if ( $this->directory_server !== null )
-				{
-					$server_location = $this->getServerLocation( $local );
-					$version = $this->getVersion( $local );
-					return '?m=' . ( string )( ( $version > 0 ) ? $version : '' );
-				}
-				return '';
+				return ( $this->directory_server !== null ) ? '?m=' . $this->getVersion( $local ) : '';
 			}
 
 			private function getServerLocation( string $local ) : Directory

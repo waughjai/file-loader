@@ -5,9 +5,23 @@ namespace WaughJ\FileLoader
 {
 	class MissingFileException extends \RuntimeException
 	{
-		public function __construct( string $message )
+		public function __construct( string $filename, string $file_url )
 		{
-			parent::__construct( $message );
+			$this->filename = $filename;
+			$this->file_url = $file_url;
+			parent::__construct( "Error: could not find modified time for file \"{$filename}\"" );
 		}
+
+		public function getFilename() : string
+		{
+			return $this->filename;
+		}
+
+		public function getFileURL() : string
+		{
+			return $this->file_url;
+		}
+
+		private $filename;
 	}
 }
