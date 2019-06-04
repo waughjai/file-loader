@@ -62,3 +62,20 @@ The "getSourceWithVersion" method analyzes the file on the server's modified dat
 		// If exception is thrown, $file_url will be the equivalent o' $loader->getSource( 'main' ).
 		$file_url = $e->getFallbackContent();
 	}
+
+## Changelog
+
+### 0.5.0
+* Add Getter Methods & Revamp Error Handling
+
+### 0.4.0
+* Add Ability to Get File Version
+
+### 0.3.0
+* Add Ability to Get Extension from Filename
+
+### 0.2.0
+* Add Change Methods
+
+### 0.1.0
+* Initial Version

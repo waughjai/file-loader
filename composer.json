@@ -2,7 +2,7 @@
     "name": "waughj/file-loader",
     "description": "Object for easily generating image sources with autoversioning for handling cache corruption.",
     "keywords": [ "file", "loader" ],
-    "license": "GPL-2.0-or-later",
+    "license": "AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Jaimeson Waugh",
@@ -15,7 +15,7 @@
 		"waughj/directory": "*",
 		"waughj/verified-arguments": "*",
 		"spatie/url": "*",
-		"waughj/test-hash-item": "*"
+		"waughj/test-hash-item": ">=2.0.0"
     },
     "require-dev": {
 		"phpunit/phpunit": "*"
